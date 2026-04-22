@@ -16,13 +16,17 @@ export const sendOrderEmails = createServerFn({ method: "POST" })
       total: number;
     };
 
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    const SMTP_USER = process.env.SMTP_USER;
+    const SMTP_PASS = process.env.SMTP_PASS;
+    const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@plantsin.com';
+
+    if (!SMTP_USER || !SMTP_PASS) {
       console.warn("SMTP_USER or SMTP_PASS is not set. Skipping emails.");
       return { success: false, error: "SMTP credentials missing" };
     }
 
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@plantsin.com';
-    const senderEmail = process.env.SMTP_USER; // Hostinger requires the sender to match the authenticated user
+    const adminEmail = ADMIN_EMAIL;
+    const senderEmail = SMTP_USER; // Hostinger requires the sender to match the authenticated user
 
     // Create the transporter
     const transporter = nodemailer.createTransport({
@@ -30,8 +34,8 @@ export const sendOrderEmails = createServerFn({ method: "POST" })
       port: 465,
       secure: true, // use SSL
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: SMTP_USER,
+        pass: SMTP_PASS,
       },
     });
 

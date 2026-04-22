@@ -77,7 +77,7 @@ function CheckoutPage() {
     const { error: itemsErr } = await supabase.from("order_items").insert(
       items.map((i) => ({
         order_id: orderId,
-        product_id: i.productId,
+        product_id: i.productId.startsWith("550e8400-") ? null : i.productId,
         product_name: i.name,
         product_image: i.image,
         variant: i.variant ?? null,

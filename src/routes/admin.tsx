@@ -1241,11 +1241,11 @@ function HeroSlideDialog({ open, onOpenChange, editing, onSaved }: { open: boole
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <Label>Image (16:9 ratio recommended)</Label>
-            <div className="mt-1 flex items-center gap-2 cursor-pointer rounded-md border border-dashed p-4 hover:bg-secondary/40 transition-colors">
+            <label className="mt-1 flex items-center gap-2 cursor-pointer rounded-md border border-dashed p-4 hover:bg-secondary/40 transition-colors">
               <Upload className="h-4 w-4" />
               <span className="text-sm">{uploading ? "Uploading..." : "Choose image file"}</span>
               <input type="file" accept="image/*" className="hidden" onChange={onUpload} disabled={uploading} />
-            </div>
+            </label>
             {form.image_url && <img src={form.image_url} alt="preview" className="mt-3 h-32 w-full max-w-sm rounded-lg object-cover" />}
             {!form.image_url && <Input className="mt-2" placeholder="Or paste image URL" value={form.image_url ?? ""} onChange={(e) => set("image_url", e.target.value)} />}
           </div>
