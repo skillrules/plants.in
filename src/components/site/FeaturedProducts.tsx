@@ -8,7 +8,7 @@ export function FeaturedProducts() {
   const { products, loading } = useProducts();
 
   return (
-    <section className="container mx-auto px-4 py-16">
+    <section className="container mx-auto px-4 pt-8 pb-16">
       <div className="flex items-end justify-between gap-4 mb-8">
         <div>
           <span className="text-xs font-semibold uppercase tracking-wider text-primary-deep">

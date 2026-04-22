@@ -8,7 +8,7 @@ export function CategoryNav() {
   return (
     <section className="container mx-auto px-4 py-6">
       <div 
-        className="flex w-full overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden gap-3 pb-4 snap-x snap-mandatory"
+        className="flex w-full overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden gap-8 pb-4 snap-x snap-mandatory"
         style={{ justifyContent: "safe center" }}
       >
         {loading ? (

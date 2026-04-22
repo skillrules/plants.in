@@ -5,6 +5,15 @@ import { HeroSlider } from "@/components/site/HeroSlider";
 import { PromoBanner } from "@/components/site/PromoBanner";
 import { Marquee } from "@/components/site/Marquee";
 import { FeaturedProducts } from "@/components/site/FeaturedProducts";
+import { SaleBanners } from "@/components/site/SaleBanners";
+import { LocationDecor } from "@/components/site/LocationDecor";
+import { PotsSection } from "@/components/site/PotsSection";
+import { BeginnersGuide } from "@/components/site/BeginnersGuide";
+import { CustomerReviews } from "@/components/site/CustomerReviews";
+import { FAQSection } from "@/components/site/FAQSection";
+import { BlogSection } from "@/components/site/BlogSection";
+import { GiftSection } from "@/components/site/GiftSection";
+import { Footer } from "@/components/site/Footer";
 import promoSucculents from "@/assets/promo-succulents.jpg";
 import promoOrchids from "@/assets/promo-orchids.jpg";
 
@@ -54,9 +63,23 @@ function Index() {
 
       <FeaturedProducts />
 
-      <footer className="container mx-auto px-4 py-12 mt-8 text-center text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} Plantsin. Grown with care.</p>
-      </footer>
+      <SaleBanners />
+
+      <LocationDecor />
+
+      <PotsSection />
+
+      <GiftSection />
+
+      <BeginnersGuide />
+
+      <CustomerReviews />
+
+      <BlogSection />
+
+      <FAQSection />
+
+      <Footer />
     </div>
   );
 }
