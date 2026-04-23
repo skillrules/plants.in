@@ -68,7 +68,6 @@ function AdminPage() {
             <TabsTrigger value="products">Products</TabsTrigger>
             <TabsTrigger value="orders">Orders</TabsTrigger>
             <TabsTrigger value="quick-links">Quick Links</TabsTrigger>
-            <TabsTrigger value="hero">Hero Slider</TabsTrigger>
             <TabsTrigger value="menu">Menu & Pages</TabsTrigger>
             <TabsTrigger value="settings">Site settings</TabsTrigger>
           </TabsList>
@@ -76,7 +75,6 @@ function AdminPage() {
           <TabsContent value="products" className="mt-6"><ProductsTab /></TabsContent>
           <TabsContent value="orders" className="mt-6"><OrdersTab /></TabsContent>
           <TabsContent value="quick-links" className="mt-6"><QuickLinksTab /></TabsContent>
-          <TabsContent value="hero" className="mt-6"><HeroSliderTab /></TabsContent>
           <TabsContent value="menu" className="mt-6"><MenuItemsTab /></TabsContent>
           <TabsContent value="settings" className="mt-6"><SettingsTab /></TabsContent>
         </Tabs>
@@ -642,7 +640,7 @@ const emptyQuickLink: Partial<QuickLink> = {
   is_active: true,
 };
 
-function QuickLinksTab() {
+export function QuickLinksTab() {
   const [items, setItems] = useState<QuickLink[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Partial<QuickLink> | null>(null);
@@ -828,9 +826,7 @@ function QuickLinkDialog({ open, onOpenChange, editing, onSaved }: { open: boole
       </DialogContent>
     </Dialog>
   );
-}
-
-// ───────────────────── Menu & Pages ─────────────────────
+}// ───────────────────── Menu & Pages ─────────────────────
 
 import type { MenuItem } from "@/hooks/useMenuItems";
 
@@ -1063,209 +1059,4 @@ function MenuItemDialog({ open, onOpenChange, editing, onSaved }: { open: boolea
   );
 }
 
-// ───────────────────── Hero Slider ─────────────────────
 
-import type { HeroSlide } from "@/hooks/useHeroSlides";
-
-const emptyHeroSlide: Partial<HeroSlide> = {
-  image_url: "",
-  eyebrow: null,
-  title: "",
-  subtitle: null,
-  cta_text: "Shop Now",
-  cta_link: "/shop",
-  sort_order: 0,
-  is_active: true,
-};
-
-function HeroSliderTab() {
-  const [items, setItems] = useState<HeroSlide[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState<Partial<HeroSlide> | null>(null);
-  const [open, setOpen] = useState(false);
-
-  const refresh = async () => {
-    setLoading(true);
-    const { data, error } = await supabase.from("hero_slides").select("*").order("sort_order", { ascending: true });
-    if (error) toast.error(error.message);
-    else setItems((data || []) as HeroSlide[]);
-    setLoading(false);
-  };
-  useEffect(() => { refresh(); }, []);
-
-  const onNew = () => { setEditing({ ...emptyHeroSlide, sort_order: items.length }); setOpen(true); };
-  const onEdit = (s: HeroSlide) => { setEditing(s); setOpen(true); };
-
-  const onDelete = async (s: HeroSlide) => {
-    if (!confirm(`Delete slide "${s.title}"?`)) return;
-    const { error } = await supabase.from("hero_slides").delete().eq("id", s.id);
-    if (error) toast.error(error.message);
-    else { toast.success("Deleted"); refresh(); }
-  };
-
-  const toggleActive = async (s: HeroSlide) => {
-    const { error } = await supabase.from("hero_slides").update({ is_active: !s.is_active }).eq("id", s.id);
-    if (error) toast.error(error.message);
-    else refresh();
-  };
-
-  const moveOrder = async (index: number, direction: -1 | 1) => {
-    if (index + direction < 0 || index + direction >= items.length) return;
-    const current = items[index];
-    const swapWith = items[index + direction];
-    
-    // optimistic UI
-    const newItems = [...items];
-    newItems[index] = { ...swapWith, sort_order: current.sort_order };
-    newItems[index + direction] = { ...current, sort_order: swapWith.sort_order };
-    setItems(newItems.sort((a, b) => a.sort_order - b.sort_order));
-
-    await supabase.from("hero_slides").update({ sort_order: swapWith.sort_order }).eq("id", current.id);
-    await supabase.from("hero_slides").update({ sort_order: current.sort_order }).eq("id", swapWith.id);
-  };
-
-  return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <p className="text-sm text-muted-foreground">{items.length} slides</p>
-        <Button onClick={onNew} className="rounded-full"><Plus className="h-4 w-4" /> New Slide</Button>
-      </div>
-
-      <div className="rounded-2xl border bg-card overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-24">Image</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead>Order</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {loading ? (
-              <TableRow><TableCell colSpan={5} className="text-center py-8"><Loader2 className="h-5 w-5 animate-spin inline" /></TableCell></TableRow>
-            ) : items.length === 0 ? (
-              <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">No slides yet</TableCell></TableRow>
-            ) : items.map((s, idx) => (
-              <TableRow key={s.id}>
-                <TableCell>{s.image_url && <img src={s.image_url} alt={s.title} className="h-12 w-20 rounded object-cover" />}</TableCell>
-                <TableCell className="font-medium">
-                  {s.title}
-                  {s.eyebrow && <div className="text-xs text-muted-foreground">{s.eyebrow}</div>}
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-1">
-                    <Button size="icon" variant="ghost" className="h-6 w-6" disabled={idx === 0} onClick={() => moveOrder(idx, -1)}><ArrowUp className="h-3 w-3" /></Button>
-                    <span className="text-sm w-4 text-center">{s.sort_order}</span>
-                    <Button size="icon" variant="ghost" className="h-6 w-6" disabled={idx === items.length - 1} onClick={() => moveOrder(idx, 1)}><ArrowDown className="h-3 w-3" /></Button>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Badge variant={s.is_active ? "default" : "secondary"}>{s.is_active ? "Active" : "Hidden"}</Badge>
-                </TableCell>
-                <TableCell className="text-right space-x-1">
-                  <Button size="icon" variant="ghost" onClick={() => toggleActive(s)} aria-label="Toggle active">
-                    {s.is_active ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
-                  <Button size="icon" variant="ghost" onClick={() => onEdit(s)}><Pencil className="h-4 w-4" /></Button>
-                  <Button size="icon" variant="ghost" onClick={() => onDelete(s)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-
-      <HeroSlideDialog open={open} onOpenChange={setOpen} editing={editing} onSaved={() => { setOpen(false); refresh(); }} />
-    </div>
-  );
-}
-
-function HeroSlideDialog({ open, onOpenChange, editing, onSaved }: { open: boolean; onOpenChange: (v: boolean) => void; editing: Partial<HeroSlide> | null; onSaved: () => void; }) {
-  const [form, setForm] = useState<Partial<HeroSlide>>(emptyHeroSlide);
-  const [uploading, setUploading] = useState(false);
-  const [busy, setBusy] = useState(false);
-
-  useEffect(() => {
-    if (editing) setForm(editing);
-  }, [editing]);
-
-  const set = <K extends keyof HeroSlide>(k: K, v: HeroSlide[K] | null | undefined) =>
-    setForm((f) => ({ ...f, [k]: v ?? null }));
-
-  const onUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    const ext = file.name.split(".").pop();
-    const path = `uploads/hero-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-    const { error } = await supabase.storage.from("site-assets").upload(path, file, { upsert: false, contentType: file.type });
-    if (error) {
-      setUploading(false);
-      toast.error(error.message);
-      return;
-    }
-    const { data } = supabase.storage.from("site-assets").getPublicUrl(path);
-    set("image_url", data.publicUrl);
-    setUploading(false);
-    toast.success("Image uploaded");
-  };
-
-  const save = async () => {
-    if (!form.title || !form.image_url || !form.cta_text || !form.cta_link) {
-      toast.error("Title, image, CTA text, and CTA link are required");
-      return;
-    }
-    setBusy(true);
-    const payload = {
-      title: form.title!.trim(),
-      image_url: form.image_url!.trim(),
-      eyebrow: form.eyebrow?.trim() ? form.eyebrow.trim() : null,
-      subtitle: form.subtitle?.trim() ? form.subtitle.trim() : null,
-      cta_text: (form.cta_text ?? "Shop Now").trim() || "Shop Now",
-      cta_link: (form.cta_link ?? "/shop").trim() || "/shop",
-      sort_order: Number(form.sort_order ?? 0),
-      is_active: form.is_active ?? true,
-    };
-    
-    const { error } = form.id
-      ? await supabase.from("hero_slides").update(payload).eq("id", form.id)
-      : await supabase.from("hero_slides").insert(payload);
-      
-    setBusy(false);
-    if (error) toast.error(error.message);
-    else { toast.success("Saved"); onSaved(); }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader><DialogTitle>{form.id ? "Edit Hero Slide" : "New Hero Slide"}</DialogTitle></DialogHeader>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="sm:col-span-2">
-            <Label>Image (16:9 ratio recommended)</Label>
-            <label className="mt-1 flex items-center gap-2 cursor-pointer rounded-md border border-dashed p-4 hover:bg-secondary/40 transition-colors">
-              <Upload className="h-4 w-4" />
-              <span className="text-sm">{uploading ? "Uploading..." : "Choose image file"}</span>
-              <input type="file" accept="image/*" className="hidden" onChange={onUpload} disabled={uploading} />
-            </label>
-            {form.image_url && <img src={form.image_url} alt="preview" className="mt-3 h-32 w-full max-w-sm rounded-lg object-cover" />}
-            {!form.image_url && <Input className="mt-2" placeholder="Or paste image URL" value={form.image_url ?? ""} onChange={(e) => set("image_url", e.target.value)} />}
-          </div>
-          
-          <div><Label>Eyebrow Text</Label><Input value={form.eyebrow ?? ""} onChange={(e) => set("eyebrow", e.target.value)} placeholder="e.g. Spring Collection" /></div>
-          <div><Label>Main Title *</Label><Input value={form.title ?? ""} onChange={(e) => set("title", e.target.value)} placeholder="e.g. Bring the outside in" /></div>
-          <div className="sm:col-span-2"><Label>Subtitle</Label><Textarea rows={2} value={form.subtitle ?? ""} onChange={(e) => set("subtitle", e.target.value)} placeholder="e.g. Hand-picked houseplants delivered..." /></div>
-          
-          <div><Label>Button Text *</Label><Input value={form.cta_text ?? "Shop Now"} onChange={(e) => set("cta_text", e.target.value)} /></div>
-          <div><Label>Button Link *</Label><Input value={form.cta_link ?? "/shop"} onChange={(e) => set("cta_link", e.target.value)} placeholder="e.g. /shop" /></div>
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={save} disabled={busy}>{busy && <Loader2 className="h-4 w-4 animate-spin" />} Save</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}

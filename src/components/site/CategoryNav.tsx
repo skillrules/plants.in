@@ -1,44 +1,34 @@
 import { Link } from "@tanstack/react-router";
 import { useQuickLinks } from "@/hooks/useQuickLinks";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export function CategoryNav() {
   const { links, loading } = useQuickLinks();
 
+  if (loading || links.length === 0) return null;
+
   return (
-    <section className="container mx-auto px-4 py-6">
-      <div 
-        className="flex w-full overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden gap-8 pb-4 snap-x snap-mandatory"
-        style={{ justifyContent: "safe center" }}
-      >
-        {loading ? (
-          // Loading skeletons
-          Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="flex shrink-0 snap-start flex-col items-center gap-2 w-[88px]">
-              <Skeleton className="h-20 w-20 rounded-full" />
-              <Skeleton className="h-4 w-16" />
-            </div>
-          ))
-        ) : links.length === 0 ? (
-          null // Optionally render nothing if no links are configured yet
-        ) : (
-          links.map((cat) => (
+    <section className="bg-background overflow-hidden">
+      <div className="container mx-auto px-4 pt-6 pb-2">
+        <div className="flex gap-6 overflow-x-auto no-scrollbar pb-2 items-center lg:justify-center md:px-8">
+          {links.map((link) => (
             <Link
-              key={cat.id}
-              to={cat.url as any} // Cast to any to bypass strict router type checks for dynamic URLs
-              className="group flex shrink-0 snap-start flex-col items-center gap-2 transition-smooth w-[88px]"
+              key={link.id}
+              to={link.url}
+              className="flex flex-col items-center gap-3 min-w-[80px] group"
             >
-              <div
-                className="flex h-20 w-20 overflow-hidden items-center justify-center rounded-full bg-secondary/50 shadow-soft ring-2 ring-transparent transition-smooth group-hover:ring-primary/30 group-hover:scale-105 group-hover:shadow-elegant"
-              >
-                <img src={cat.image_url} alt={cat.title} className="h-full w-full object-cover" />
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-300">
+                <img
+                  src={link.image_url}
+                  alt={link.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
               </div>
-              <span className="text-sm font-medium text-foreground/80 group-hover:text-primary-deep text-center leading-tight">
-                {cat.title}
+              <span className="text-xs sm:text-sm font-semibold text-center tracking-wide capitalize text-muted-foreground group-hover:text-foreground transition-colors">
+                {link.title}
               </span>
             </Link>
-          ))
-        )}
+          ))}
+        </div>
       </div>
     </section>
   );
