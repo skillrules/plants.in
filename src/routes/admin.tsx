@@ -1219,12 +1219,12 @@ function HeroSlideDialog({ open, onOpenChange, editing, onSaved }: { open: boole
     }
     setBusy(true);
     const payload = {
-      title: form.title!,
-      image_url: form.image_url!,
-      eyebrow: form.eyebrow || null,
-      subtitle: form.subtitle || null,
-      cta_text: form.cta_text!,
-      cta_link: form.cta_link!,
+      title: form.title!.trim(),
+      image_url: form.image_url!.trim(),
+      eyebrow: form.eyebrow?.trim() ? form.eyebrow.trim() : null,
+      subtitle: form.subtitle?.trim() ? form.subtitle.trim() : null,
+      cta_text: (form.cta_text ?? "Shop Now").trim() || "Shop Now",
+      cta_link: (form.cta_link ?? "/shop").trim() || "/shop",
       sort_order: Number(form.sort_order ?? 0),
       is_active: form.is_active ?? true,
     };
