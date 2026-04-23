@@ -4,6 +4,7 @@ import appCss from "../styles.css?url";
 import { CartProvider } from "@/store/cart";
 import { WishlistProvider } from "@/store/wishlist";
 import { CartDrawer } from "@/components/site/CartDrawer";
+import { PreviewHelpPanel } from "@/components/site/PreviewHelpPanel";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/hooks/useAuth";
 
@@ -80,6 +81,7 @@ function RootComponent() {
         <CartProvider>
           <Outlet />
           <CartDrawer />
+          <PreviewHelpPanel />
           <Toaster position="bottom-right" />
         </CartProvider>
       </WishlistProvider>
