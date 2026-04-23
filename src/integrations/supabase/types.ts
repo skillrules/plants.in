@@ -19,12 +19,12 @@ export type Database = {
           created_at: string
           cta_link: string
           cta_text: string
-          eyebrow: string
+          eyebrow: string | null
           id: string
           image_url: string
           is_active: boolean
           sort_order: number
-          subtitle: string
+          subtitle: string | null
           title: string
           updated_at: string
         }
@@ -32,12 +32,12 @@ export type Database = {
           created_at?: string
           cta_link?: string
           cta_text?: string
-          eyebrow?: string
+          eyebrow?: string | null
           id?: string
           image_url: string
           is_active?: boolean
           sort_order?: number
-          subtitle?: string
+          subtitle?: string | null
           title?: string
           updated_at?: string
         }
@@ -45,12 +45,12 @@ export type Database = {
           created_at?: string
           cta_link?: string
           cta_text?: string
-          eyebrow?: string
+          eyebrow?: string | null
           id?: string
           image_url?: string
           is_active?: boolean
           sort_order?: number
-          subtitle?: string
+          subtitle?: string | null
           title?: string
           updated_at?: string
         }
