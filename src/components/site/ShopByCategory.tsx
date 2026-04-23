@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Leaf, Sprout, FlowerPot } from "lucide-react";
+import { ArrowRight, Leaf, Sprout, Flower2 } from "lucide-react";
 
 const categories = [
   {
@@ -18,7 +18,7 @@ const categories = [
     title: "Pots & Planters",
     subtitle: "Handcrafted vessels",
     href: "/shop",
-    Icon: FlowerPot,
+    Icon: Flower2,
   },
 ];
 
