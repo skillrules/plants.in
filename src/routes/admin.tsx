@@ -1191,7 +1191,8 @@ function HeroSlideDialog({ open, onOpenChange, editing, onSaved }: { open: boole
     if (editing) setForm(editing);
   }, [editing]);
 
-  const set = <K extends keyof HeroSlide>(k: K, v: HeroSlide[K] | null) => setForm((f) => ({ ...f, [k]: v }));
+  const set = <K extends keyof HeroSlide>(k: K, v: HeroSlide[K] | null | undefined) =>
+    setForm((f) => ({ ...f, [k]: v ?? null }));
 
   const onUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
