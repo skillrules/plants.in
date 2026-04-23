@@ -62,8 +62,9 @@ function AdminPage() {
       <Header />
       <div className="container mx-auto px-4 py-10">
         <h1 className="font-display text-3xl font-semibold mb-6">Admin dashboard</h1>
-        <Tabs defaultValue="products">
+        <Tabs defaultValue="dashboard">
           <TabsList>
+            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="products">Products</TabsTrigger>
             <TabsTrigger value="orders">Orders</TabsTrigger>
             <TabsTrigger value="quick-links">Quick Links</TabsTrigger>
@@ -71,6 +72,7 @@ function AdminPage() {
             <TabsTrigger value="menu">Menu & Pages</TabsTrigger>
             <TabsTrigger value="settings">Site settings</TabsTrigger>
           </TabsList>
+          <TabsContent value="dashboard" className="mt-6"><DashboardTab /></TabsContent>
           <TabsContent value="products" className="mt-6"><ProductsTab /></TabsContent>
           <TabsContent value="orders" className="mt-6"><OrdersTab /></TabsContent>
           <TabsContent value="quick-links" className="mt-6"><QuickLinksTab /></TabsContent>
