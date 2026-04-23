@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start';
-import * as nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { formatINR } from '@/lib/format';
 
 export const sendOrderEmails = createServerFn({ method: "POST" })
@@ -16,28 +16,24 @@ export const sendOrderEmails = createServerFn({ method: "POST" })
       total: number;
     };
 
-    const SMTP_USER = process.env.SMTP_USER;
-    const SMTP_PASS = process.env.SMTP_PASS;
-    const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@plantsin.com';
+    // Fallback to various ways TanStack Start/Cloudflare might expose env variables
+    const processEnv = typeof process !== 'undefined' && process.env ? process.env : ({} as any);
+    const cfEnv = ctx.context?.cloudflare?.env || ctx.context?.env || ({} as any);
+    
+    // Statically replaced by Vite during build, fallback to runtime envs
+    const RESEND_API_KEY = import.meta.env.VITE_RESEND_API_KEY || processEnv.RESEND_API_KEY || cfEnv.RESEND_API_KEY;
+    const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || processEnv.ADMIN_EMAIL || cfEnv.ADMIN_EMAIL || 'admin@plantsin.com';
 
-    if (!SMTP_USER || !SMTP_PASS) {
-      console.warn("SMTP_USER or SMTP_PASS is not set. Skipping emails.");
-      return { success: false, error: "SMTP credentials missing" };
+    if (!RESEND_API_KEY) {
+      console.warn("RESEND_API_KEY is not set. Skipping emails.");
+      return { success: false, error: "Resend API key missing" };
     }
 
+    const resend = new Resend(RESEND_API_KEY);
     const adminEmail = ADMIN_EMAIL;
-    const senderEmail = SMTP_USER; // Hostinger requires the sender to match the authenticated user
-
-    // Create the transporter
-    const transporter = nodemailer.createTransport({
-      host: "smtp.hostinger.com",
-      port: 465,
-      secure: true, // use SSL
-      auth: {
-        user: SMTP_USER,
-        pass: SMTP_PASS,
-      },
-    });
+    // Resend will throw an error if this domain isn't verified in your Resend account!
+    // If it's not verified yet, you must use 'onboarding@resend.dev'
+    const senderEmail = 'orders@plantsin.com'; 
 
     const itemsHtml = data.items.map(i => `
       <tr>
@@ -93,17 +89,18 @@ export const sendOrderEmails = createServerFn({ method: "POST" })
     `;
 
     try {
-      // Send Admin Email
-      await transporter.sendMail({
-        from: `"Plantsin Orders" <${senderEmail}>`,
-        to: adminEmail,
-        subject: `New Order! ${data.orderNumber} - ${formatINR(data.total)}`,
-        html: adminHtml,
-      });
+      const emailsToSend = [
+        {
+          from: `"Plantsin Orders" <${senderEmail}>`,
+          to: adminEmail,
+          subject: `New Order! ${data.orderNumber} - ${formatINR(data.total)}`,
+          html: adminHtml,
+        }
+      ];
 
-      // Send Customer Email
+      // Add customer email if they provided one
       if (data.customerEmail && data.customerEmail !== "no-email@plantsin.com") {
-        await transporter.sendMail({
+        emailsToSend.push({
           from: `"Plantsin" <${senderEmail}>`,
           to: data.customerEmail,
           subject: `Your Plantsin Order Confirmation #${data.orderNumber}`,
@@ -111,9 +108,17 @@ export const sendOrderEmails = createServerFn({ method: "POST" })
         });
       }
 
-      return { success: true };
+      // Send emails in a batch
+      const { data: resendData, error } = await resend.batch.send(emailsToSend);
+
+      if (error) {
+        console.error("Resend API Error:", error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true, data: resendData };
     } catch (error: any) {
-      console.error("Nodemailer send error:", error);
+      console.error("Resend send error:", error);
       return { success: false, error: error.message };
     }
   });
