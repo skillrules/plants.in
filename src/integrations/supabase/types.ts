@@ -17,8 +17,8 @@ export type Database = {
       hero_slides: {
         Row: {
           created_at: string
-          cta_label: string
-          cta_url: string
+          cta_link: string
+          cta_text: string
           eyebrow: string
           id: string
           image_url: string
@@ -30,8 +30,8 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          cta_label?: string
-          cta_url?: string
+          cta_link?: string
+          cta_text?: string
           eyebrow?: string
           id?: string
           image_url: string
@@ -43,8 +43,8 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          cta_label?: string
-          cta_url?: string
+          cta_link?: string
+          cta_text?: string
           eyebrow?: string
           id?: string
           image_url?: string
@@ -58,31 +58,40 @@ export type Database = {
       }
       menu_items: {
         Row: {
+          content: string | null
           created_at: string
           id: string
           is_active: boolean
-          label: string
+          slug: string | null
           sort_order: number
+          title: string
+          type: string
           updated_at: string
-          url: string
+          url: string | null
         }
         Insert: {
+          content?: string | null
           created_at?: string
           id?: string
           is_active?: boolean
-          label: string
+          slug?: string | null
           sort_order?: number
+          title: string
+          type?: string
           updated_at?: string
-          url: string
+          url?: string | null
         }
         Update: {
+          content?: string | null
           created_at?: string
           id?: string
           is_active?: boolean
-          label?: string
+          slug?: string | null
           sort_order?: number
+          title?: string
+          type?: string
           updated_at?: string
-          url?: string
+          url?: string | null
         }
         Relationships: []
       }
