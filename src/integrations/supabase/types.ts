@@ -14,81 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      hero_slides: {
-        Row: {
-          created_at: string
-          id: string
-          image_url: string
-          eyebrow: string | null
-          title: string
-          subtitle: string | null
-          cta_text: string
-          cta_link: string
-          sort_order: number
-          is_active: boolean
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          image_url: string
-          eyebrow?: string | null
-          title: string
-          subtitle?: string | null
-          cta_text?: string
-          cta_link?: string
-          sort_order?: number
-          is_active?: boolean
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          image_url?: string
-          eyebrow?: string | null
-          title?: string
-          subtitle?: string | null
-          cta_text?: string
-          cta_link?: string
-          sort_order?: number
-          is_active?: boolean
-        }
-        Relationships: []
-      }
-      menu_items: {
-        Row: {
-          created_at: string
-          id: string
-          title: string
-          type: "link" | "page"
-          slug: string | null
-          url: string | null
-          content: string | null
-          sort_order: number
-          is_active: boolean
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          title: string
-          type: "link" | "page"
-          slug?: string | null
-          url?: string | null
-          content?: string | null
-          sort_order?: number
-          is_active?: boolean
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          title?: string
-          type?: "link" | "page"
-          slug?: string | null
-          url?: string | null
-          content?: string | null
-          sort_order?: number
-          is_active?: boolean
-        }
-        Relationships: []
-      }
       order_items: {
         Row: {
           created_at: string
@@ -197,7 +122,6 @@ export type Database = {
           category: string
           created_at: string
           description: string
-          gallery: string[] | null
           id: string
           image: string
           is_active: boolean
@@ -217,7 +141,6 @@ export type Database = {
           category: string
           created_at?: string
           description?: string
-          gallery?: string[] | null
           id?: string
           image: string
           is_active?: boolean
@@ -237,7 +160,6 @@ export type Database = {
           category?: string
           created_at?: string
           description?: string
-          gallery?: string[] | null
           id?: string
           image?: string
           is_active?: boolean
@@ -251,58 +173,22 @@ export type Database = {
         }
         Relationships: []
       }
-      quick_links: {
-        Row: {
-          created_at: string
-          id: string
-          image_url: string
-          is_active: boolean
-          sort_order: number
-          title: string
-          updated_at: string
-          url: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          image_url: string
-          is_active?: boolean
-          sort_order?: number
-          title: string
-          updated_at?: string
-          url: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          image_url?: string
-          is_active?: boolean
-          sort_order?: number
-          title?: string
-          updated_at?: string
-          url?: string
-        }
-        Relationships: []
-      }
       site_settings: {
         Row: {
           id: number
           logo_url: string | null
-          favicon_url: string | null
           site_name: string
           updated_at: string
         }
         Insert: {
           id?: number
           logo_url?: string | null
-          favicon_url?: string | null
           site_name?: string
           updated_at?: string
         }
         Update: {
           id?: number
           logo_url?: string | null
-          favicon_url?: string | null
           site_name?: string
           updated_at?: string
         }
