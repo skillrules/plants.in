@@ -49,20 +49,26 @@ export function DashboardTab() {
       since.setDate(since.getDate() - Number(days));
       const sinceIso = since.toISOString();
 
-      const [ordersRes, itemsRes] = await Promise.all([
-        supabase
-          .from("orders")
-          .select("id, subtotal, status, created_at")
-          .gte("created_at", sinceIso)
-          .order("created_at", { ascending: true }),
-        supabase
-          .from("order_items")
-          .select("product_name, product_image, qty, unit_price, order_id, orders!inner(created_at)")
-          .gte("orders.created_at", sinceIso),
-      ]);
+      const ordersRes = await supabase
+        .from("orders")
+        .select("id, subtotal, status, created_at")
+        .gte("created_at", sinceIso)
+        .order("created_at", { ascending: true });
       if (cancel) return;
-      setOrders((ordersRes.data ?? []) as OrderRow[]);
-      setItems((itemsRes.data ?? []) as unknown as OrderItemRow[]);
+      const ordersData = (ordersRes.data ?? []) as OrderRow[];
+      setOrders(ordersData);
+
+      const orderIds = ordersData.map((o) => o.id);
+      let itemsData: OrderItemRow[] = [];
+      if (orderIds.length > 0) {
+        const itemsRes = await supabase
+          .from("order_items")
+          .select("product_name, product_image, qty, unit_price, order_id")
+          .in("order_id", orderIds);
+        if (cancel) return;
+        itemsData = (itemsRes.data ?? []) as OrderItemRow[];
+      }
+      setItems(itemsData);
       setLoading(false);
     })();
     return () => {
