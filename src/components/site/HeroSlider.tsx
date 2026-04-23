@@ -80,15 +80,19 @@ export function HeroSlider() {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/40 to-transparent" />
           <div className="relative flex h-full flex-col justify-center px-8 md:px-14 max-w-2xl">
-            <span className="inline-flex w-fit items-center rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary-deep">
-              {s.eyebrow}
-            </span>
+            {s.eyebrow && (
+              <span className="inline-flex w-fit items-center rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary-deep">
+                {s.eyebrow}
+              </span>
+            )}
             <h2 className="mt-4 font-display text-4xl md:text-6xl font-semibold leading-[1.05] text-foreground">
               {s.title}
             </h2>
-            <p className="mt-4 max-w-md text-base md:text-lg text-muted-foreground">
-              {s.subtitle}
-            </p>
+            {s.subtitle && (
+              <p className="mt-4 max-w-md text-base md:text-lg text-muted-foreground">
+                {s.subtitle}
+              </p>
+            )}
             <div className="mt-7">
               <Button asChild size="lg" className="rounded-full bg-gradient-primary text-primary-foreground shadow-glow hover:opacity-95 px-7">
                 <Link to={s.link}>{s.cta}</Link>
