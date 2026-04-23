@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -28,12 +28,50 @@ const categories = [
 
 export function ShopByCategory() {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+
+    const updateActive = () => {
+      const children = Array.from(el.children) as HTMLElement[];
+      if (children.length === 0) return;
+      const scrollerLeft = el.getBoundingClientRect().left;
+      let closestIdx = 0;
+      let closestDist = Infinity;
+      children.forEach((child, i) => {
+        const dist = Math.abs(child.getBoundingClientRect().left - scrollerLeft);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closestIdx = i;
+        }
+      });
+      setActiveIndex(closestIdx);
+    };
+
+    updateActive();
+    el.addEventListener("scroll", updateActive, { passive: true });
+    window.addEventListener("resize", updateActive);
+    return () => {
+      el.removeEventListener("scroll", updateActive);
+      window.removeEventListener("resize", updateActive);
+    };
+  }, []);
 
   const scrollBy = (dir: "left" | "right") => {
     const el = scrollerRef.current;
     if (!el) return;
     const amount = el.clientWidth * 0.85;
     el.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
+  };
+
+  const scrollToIndex = (i: number) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const child = el.children[i] as HTMLElement | undefined;
+    if (!child) return;
+    el.scrollTo({ left: child.offsetLeft - el.offsetLeft, behavior: "smooth" });
   };
 
   return (
@@ -120,6 +158,31 @@ export function ShopByCategory() {
             </span>
           </Link>
         ))}
+      </div>
+
+      {/* Progress indicator */}
+      <div className="mt-5 flex items-center justify-center gap-4">
+        <div className="flex items-center gap-1.5">
+          {categories.map((c, i) => (
+            <button
+              key={c.title}
+              type="button"
+              onClick={() => scrollToIndex(i)}
+              aria-label={`Go to ${c.title}`}
+              aria-current={i === activeIndex}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === activeIndex
+                  ? "w-6 bg-primary-deep"
+                  : "w-1.5 bg-border hover:bg-primary/40"
+              }`}
+            />
+          ))}
+        </div>
+        <span className="text-xs font-semibold text-muted-foreground tabular-nums">
+          {String(activeIndex + 1).padStart(2, "0")}
+          <span className="mx-1 text-border">/</span>
+          {String(categories.length).padStart(2, "0")}
+        </span>
       </div>
     </section>
   );
