@@ -1069,9 +1069,9 @@ import type { HeroSlide } from "@/hooks/useHeroSlides";
 
 const emptyHeroSlide: Partial<HeroSlide> = {
   image_url: "",
-  eyebrow: "",
+  eyebrow: null,
   title: "",
-  subtitle: "",
+  subtitle: null,
   cta_text: "Shop Now",
   cta_link: "/shop",
   sort_order: 0,
