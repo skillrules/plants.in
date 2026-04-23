@@ -18,6 +18,7 @@ import { Loader2, Pencil, Plus, Trash2, Upload, Eye, EyeOff, ArrowUp, ArrowDown 
 import { formatINR } from "@/lib/format";
 import type { DbProduct } from "@/hooks/useProducts";
 import type { QuickLink } from "@/hooks/useQuickLinks";
+import { DashboardTab } from "@/components/admin/DashboardTab";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — Plantsin" }, { name: "robots", content: "noindex" }] }),
