@@ -5,6 +5,7 @@ import { HeroSlider } from "@/components/site/HeroSlider";
 import { PromoBanner } from "@/components/site/PromoBanner";
 import { Marquee } from "@/components/site/Marquee";
 import { FeaturedProducts } from "@/components/site/FeaturedProducts";
+import { ShopByCategory } from "@/components/site/ShopByCategory";
 import { SaleBanners } from "@/components/site/SaleBanners";
 import { LocationDecor } from "@/components/site/LocationDecor";
 import { PotsSection } from "@/components/site/PotsSection";
@@ -62,6 +63,8 @@ function Index() {
       <Marquee />
 
       <FeaturedProducts />
+
+      <ShopByCategory />
 
       <SaleBanners />
 
