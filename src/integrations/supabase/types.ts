@@ -14,6 +14,87 @@ export type Database = {
   }
   public: {
     Tables: {
+      hero_slides: {
+        Row: {
+          created_at: string
+          cta_link: string
+          cta_text: string
+          eyebrow: string | null
+          id: string
+          image_url: string
+          is_active: boolean
+          sort_order: number
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          cta_link?: string
+          cta_text?: string
+          eyebrow?: string | null
+          id?: string
+          image_url: string
+          is_active?: boolean
+          sort_order?: number
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          cta_link?: string
+          cta_text?: string
+          eyebrow?: string | null
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          sort_order?: number
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      menu_items: {
+        Row: {
+          content: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          slug: string | null
+          sort_order: number
+          title: string
+          type: string
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          slug?: string | null
+          sort_order?: number
+          title: string
+          type?: string
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          slug?: string | null
+          sort_order?: number
+          title?: string
+          type?: string
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
@@ -122,6 +203,7 @@ export type Database = {
           category: string
           created_at: string
           description: string
+          gallery: string[] | null
           id: string
           image: string
           is_active: boolean
@@ -141,6 +223,7 @@ export type Database = {
           category: string
           created_at?: string
           description?: string
+          gallery?: string[] | null
           id?: string
           image: string
           is_active?: boolean
@@ -160,6 +243,7 @@ export type Database = {
           category?: string
           created_at?: string
           description?: string
+          gallery?: string[] | null
           id?: string
           image?: string
           is_active?: boolean
@@ -173,20 +257,56 @@ export type Database = {
         }
         Relationships: []
       }
+      quick_links: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          is_active: boolean
+          sort_order: number
+          title: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          is_active?: boolean
+          sort_order?: number
+          title: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
+          favicon_url: string | null
           id: number
           logo_url: string | null
           site_name: string
           updated_at: string
         }
         Insert: {
+          favicon_url?: string | null
           id?: number
           logo_url?: string | null
           site_name?: string
           updated_at?: string
         }
         Update: {
+          favicon_url?: string | null
           id?: number
           logo_url?: string | null
           site_name?: string
