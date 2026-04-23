@@ -159,6 +159,31 @@ export function ShopByCategory() {
           </Link>
         ))}
       </div>
+
+      {/* Progress indicator */}
+      <div className="mt-5 flex items-center justify-center gap-4">
+        <div className="flex items-center gap-1.5">
+          {categories.map((c, i) => (
+            <button
+              key={c.title}
+              type="button"
+              onClick={() => scrollToIndex(i)}
+              aria-label={`Go to ${c.title}`}
+              aria-current={i === activeIndex}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === activeIndex
+                  ? "w-6 bg-primary-deep"
+                  : "w-1.5 bg-border hover:bg-primary/40"
+              }`}
+            />
+          ))}
+        </div>
+        <span className="text-xs font-semibold text-muted-foreground tabular-nums">
+          {String(activeIndex + 1).padStart(2, "0")}
+          <span className="mx-1 text-border">/</span>
+          {String(categories.length).padStart(2, "0")}
+        </span>
+      </div>
     </section>
   );
 }
