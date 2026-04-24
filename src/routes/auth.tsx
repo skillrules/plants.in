@@ -116,9 +116,11 @@ function AuthPage() {
               <Button type="submit" disabled={busy} className="w-full rounded-full">
                 {busy && <Loader2 className="h-4 w-4 animate-spin" />} Create account
               </Button>
-              <p className="text-xs text-muted-foreground">
-                The first account created automatically becomes the admin.
-              </p>
+              {import.meta.env.DEV && (
+                <p className="text-xs text-muted-foreground">
+                  Dev only: configure the admin allowlist in your migrations to grant admin access.
+                </p>
+              )}
             </form>
           </TabsContent>
         </Tabs>
