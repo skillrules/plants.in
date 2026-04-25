@@ -9,12 +9,12 @@ export function CategoryNav() {
   return (
     <section className="bg-background overflow-hidden">
       <div className="container mx-auto px-4 pt-6 pb-2">
-        <div className="flex gap-6 overflow-x-auto no-scrollbar pb-2 items-center lg:justify-center md:px-8">
+        <div className="flex gap-3 md:gap-6 overflow-x-auto no-scrollbar pb-2 items-center lg:justify-center md:px-8">
           {links.map((link) => (
             <Link
               key={link.id}
               to={link.url}
-              className="flex flex-col items-center gap-3 min-w-[80px] group"
+              className="flex flex-col items-center gap-2 md:gap-3 min-w-[64px] md:min-w-[80px] group"
             >
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-300">
                 <img

@@ -194,10 +194,16 @@ function ProductDialog({
   const [imageMode, setImageMode] = useState<"url" | "upload">("url");
   const [uploading, setUploading] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [categoriesList, setCategoriesList] = useState<string[]>([...CATEGORIES]);
 
   useEffect(() => {
-    if (editing) setForm(editing);
-  }, [editing]);
+    if (editing) {
+      setForm(editing);
+      if (editing.category && !categoriesList.includes(editing.category)) {
+        setCategoriesList((prev) => [...prev, editing.category!]);
+      }
+    }
+  }, [editing, categoriesList]);
 
   const set = <K extends keyof DbProduct>(k: K, v: DbProduct[K] | null) =>
     setForm((f) => ({ ...f, [k]: v }));
@@ -297,10 +303,30 @@ function ProductDialog({
           <div className="sm:col-span-2"><Label>Name</Label><Input value={form.name ?? ""} onChange={(e) => set("name", e.target.value)} /></div>
           <div><Label>Tag</Label><Input value={form.tag ?? ""} onChange={(e) => set("tag", e.target.value)} placeholder="e.g. Easy care · Indoor" /></div>
           <div><Label>Category</Label>
-            <Select value={form.category ?? "Indoor"} onValueChange={(v) => set("category", v)}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>{CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
-            </Select>
+            <div className="flex gap-2 mt-1">
+              <Select value={form.category ?? "Indoor"} onValueChange={(v) => set("category", v)}>
+                <SelectTrigger className="flex-1"><SelectValue /></SelectTrigger>
+                <SelectContent>{categoriesList.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+              </Select>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => {
+                  const newCat = window.prompt("Enter new category name:");
+                  if (newCat && newCat.trim() !== "") {
+                    const trimmed = newCat.trim();
+                    if (!categoriesList.includes(trimmed)) {
+                      setCategoriesList((prev) => [...prev, trimmed]);
+                    }
+                    set("category", trimmed as never);
+                  }
+                }}
+                title="Add new category"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           <div><Label>Price (₹)</Label><Input type="number" step="0.01" value={form.price ?? 0} onChange={(e) => set("price", Number(e.target.value) as never)} /></div>
           <div><Label>Old price (₹, optional)</Label><Input type="number" step="0.01" value={form.old_price ?? ""} onChange={(e) => set("old_price", e.target.value ? Number(e.target.value) as never : null)} /></div>
@@ -366,7 +392,7 @@ function ProductDialog({
             )}
           </div>
 
-          <div className="sm:col-span-2"><Label>Description</Label><Textarea rows={3} value={form.description ?? ""} onChange={(e) => set("description", e.target.value)} /></div>
+          <div className="sm:col-span-2"><Label>Description (Short)</Label><Textarea rows={3} value={form.description ?? ""} onChange={(e) => set("description", e.target.value)} /></div>
           <div><Label>Light</Label><Input value={form.care_light ?? ""} onChange={(e) => set("care_light", e.target.value)} placeholder="Bright indirect" /></div>
           <div><Label>Water</Label><Input value={form.care_water ?? ""} onChange={(e) => set("care_water", e.target.value)} placeholder="Weekly" /></div>
           <div className="sm:col-span-2"><Label>Pet safe</Label><Input value={form.care_pet_safe ?? ""} onChange={(e) => set("care_pet_safe", e.target.value)} placeholder="Pet safe / Toxic to pets" /></div>

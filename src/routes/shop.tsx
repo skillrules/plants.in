@@ -3,6 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { useProducts, type Category } from "@/hooks/useProducts";
+import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -59,7 +60,7 @@ const LIGHT_IDS = LIGHT_OPTIONS.map((o) => o.id) as unknown as [string, ...strin
 
 const shopSearchSchema = z.object({
   q: fallback(z.string(), "").default(""),
-  categories: fallback(z.array(z.enum(CATEGORIES as [Category, ...Category[]])), []).default([]),
+  categories: fallback(z.array(z.string()), []).default([]),
   light: fallback(z.array(z.enum(LIGHT_IDS)), []).default([]),
   petSafe: fallback(z.boolean(), false).default(false),
   min: fallback(z.number(), MIN_PRICE).default(MIN_PRICE),
@@ -71,6 +72,18 @@ const shopSearchSchema = z.object({
 
 export const Route = createFileRoute("/shop")({
   validateSearch: zodValidator(shopSearchSchema),
+  loader: async () => {
+    const { data } = await supabase.from("products").select("category");
+    const uniqueCats = new Set<string>(CATEGORIES);
+    if (data) {
+      data.forEach((d) => {
+        if (d.category) uniqueCats.add(d.category);
+      });
+    }
+    return {
+      loadedCategories: Array.from(uniqueCats).sort(),
+    };
+  },
   head: () => ({
     meta: [
       { title: "Shop All Plants — Plantsin" },
@@ -83,10 +96,11 @@ export const Route = createFileRoute("/shop")({
 });
 
 function FiltersPanel({
-  categories, setCategories, light, setLight, petSafe, setPetSafe, price, setPrice, onReset,
+  availableCategories, categories, setCategories, light, setLight, petSafe, setPetSafe, price, setPrice, onReset,
 }: {
-  categories: Category[];
-  setCategories: (v: Category[]) => void;
+  availableCategories: string[];
+  categories: string[];
+  setCategories: (v: string[]) => void;
   light: string[];
   setLight: (v: string[]) => void;
   petSafe: boolean;
@@ -98,7 +112,7 @@ function FiltersPanel({
   const toggleLight = (id: string) => {
     setLight(light.includes(id) ? light.filter((x) => x !== id) : [...light, id]);
   };
-  const toggleCategory = (c: Category) => {
+  const toggleCategory = (c: string) => {
     setCategories(categories.includes(c) ? categories.filter((x) => x !== c) : [...categories, c]);
   };
   return (
@@ -106,7 +120,7 @@ function FiltersPanel({
       <div>
         <h3 className="text-sm font-semibold text-foreground mb-3">Category</h3>
         <div className="flex flex-col gap-2.5">
-          {CATEGORIES.map((c) => (
+          {availableCategories.map((c) => (
             <div key={c} className="flex items-center gap-2.5">
               <Checkbox
                 id={`cat-${c}`}
@@ -180,12 +194,20 @@ function FiltersPanel({
 type ShopSearch = z.infer<typeof shopSearchSchema>;
 
 function ShopPage() {
+  const { loadedCategories } = Route.useLoaderData();
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/shop" });
   const { products, loading } = useProducts();
 
+  const dynamicCategories = useMemo(() => {
+    if (!products || products.length === 0) return loadedCategories;
+    const cats = new Set(loadedCategories);
+    products.forEach(p => cats.add(p.category));
+    return Array.from(cats).sort();
+  }, [products, loadedCategories]);
+
   const q = search.q;
-  const categories = search.categories as Category[];
+  const categories = search.categories as string[];
   const light = search.light;
   const petSafe = search.petSafe;
   const price: [number, number] = [search.min, search.max];
@@ -198,7 +220,7 @@ function ShopPage() {
   }, [page]);
 
   // Reset to page 1 whenever filters/sort change
-  const setCategories = (v: Category[]) =>
+  const setCategories = (v: string[]) =>
     navigate({ search: (prev: ShopSearch) => ({ ...prev, categories: v, page: 1 }), replace: true, resetScroll: false });
   const setLight = (v: string[]) =>
     navigate({ search: (prev: ShopSearch) => ({ ...prev, light: v, page: 1 }), replace: true, resetScroll: false });
@@ -330,6 +352,7 @@ function ShopPage() {
             <div className="sticky top-24 rounded-3xl border border-border bg-card p-6">
               <h2 className="font-display text-lg font-semibold text-foreground mb-5">Filters</h2>
               <FiltersPanel
+                availableCategories={dynamicCategories}
                 categories={categories} setCategories={setCategories}
                 light={light} setLight={setLight}
                 petSafe={petSafe} setPetSafe={setPetSafe}
@@ -353,6 +376,7 @@ function ShopPage() {
                     <SheetTitle>Filters</SheetTitle>
                   </SheetHeader>
                   <FiltersPanel
+                    availableCategories={dynamicCategories}
                     categories={categories} setCategories={setCategories}
                     light={light} setLight={setLight}
                     petSafe={petSafe} setPetSafe={setPetSafe}

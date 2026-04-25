@@ -136,8 +136,8 @@ function ProductDetail() {
       <section className="container mx-auto px-4 py-8">
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-14">
           <div className="flex flex-col gap-4">
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-secondary/50 to-accent/20 shadow-elegant">
-              <div className="aspect-square overflow-hidden">
+            <div className="relative overflow-hidden rounded-[2.5rem] bg-white shadow-sm border border-border/40">
+              <div className="aspect-square md:aspect-[4/3] overflow-hidden">
                 <div 
                   className="flex h-full w-full transition-transform duration-500 ease-out"
                   style={{ transform: `translateX(-${activeIdx * 100}%)` }}
@@ -167,7 +167,7 @@ function ProductDetail() {
                 <button
                   key={idx}
                   onClick={() => setActiveIdx(idx)}
-                  className={`aspect-square overflow-hidden rounded-2xl border-2 transition-smooth ${
+                  className={`aspect-square overflow-hidden rounded-2xl border-2 transition-smooth bg-white ${
                     activeIdx === idx 
                       ? "border-primary shadow-soft" 
                       : "border-transparent opacity-70 hover:opacity-100 hover:border-border"

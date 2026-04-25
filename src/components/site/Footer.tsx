@@ -22,9 +22,9 @@ export function Footer() {
               Bring nature indoors. We deliver the freshest, most beautiful plants right to your doorstep with a 30-day health guarantee.
             </p>
             <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
-              <Input 
-                type="email" 
-                placeholder="Your email address" 
+              <Input
+                type="email"
+                placeholder="Your email address"
                 className="bg-secondary/50 border-transparent focus-visible:bg-background rounded-full"
               />
               <Button type="submit" size="icon" className="rounded-full shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground">
