@@ -4,6 +4,7 @@ import { products as localProducts } from "@/data/products";
 
 export interface DbProduct {
   id: string;
+  slug: string | null;
   name: string;
   tag: string;
   price: number;
@@ -19,12 +20,14 @@ export interface DbProduct {
   care_pet_safe: string;
   is_active: boolean;
   sort_order: number;
+  additional_info?: string | null;
 }
 
 export type Category = "Indoor" | "Succulent" | "Flowering" | "Trailing";
 
 export interface Product {
   id: string;
+  slug: string;
   name: string;
   tag: string;
   price: number;
@@ -36,10 +39,12 @@ export interface Product {
   category: Category;
   description: string;
   care: { light: string; water: string; petSafe: string };
+  additional_info?: string;
 }
 
 export const fromDb = (r: DbProduct): Product => ({
   id: r.id,
+  slug: r.slug || r.id,
   name: r.name,
   tag: r.tag,
   price: Number(r.price),
@@ -50,6 +55,7 @@ export const fromDb = (r: DbProduct): Product => ({
   badge: (r.badge as Product["badge"]) || undefined,
   category: r.category as Category,
   description: r.description,
+  additional_info: (r as any).additional_info || undefined,
   care: { light: r.care_light, water: r.care_water, petSafe: r.care_pet_safe },
 });
 

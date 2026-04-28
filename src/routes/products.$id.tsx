@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { ChevronLeft, Heart, Minus, Plus, ShoppingBag, Star, Truck, Shield, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
+import { Footer } from "@/components/site/Footer";
 import { useCart } from "@/store/cart";
 import { useWishlist } from "@/store/wishlist";
 import { formatINR } from "@/lib/format";
@@ -13,12 +14,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/products/$id")({
   loader: async ({ params }) => {
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("id", params.id)
-      .eq("is_active", true)
-      .maybeSingle();
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(params.id);
+    const query = supabase.from("products").select("*").eq("is_active", true);
+    if (isUuid) {
+      query.eq("id", params.id);
+    } else {
+      query.eq("slug", params.id);
+    }
+    const { data, error } = await query.maybeSingle();
       
     if (error) throw new Error(error.message);
     
@@ -64,25 +67,16 @@ export const Route = createFileRoute("/products/$id")({
   ),
 });
 
-const SIZES = [
-  { id: "s", label: "Small", sub: "12cm pot", delta: -200 },
-  { id: "m", label: "Medium", sub: "17cm pot", delta: 0 },
-  { id: "l", label: "Large", sub: "21cm pot", delta: 450 },
-] as const;
 
-const POTS = [
-  { id: "nursery", label: "Nursery pot", sub: "Included", delta: 0 },
-  { id: "terracotta", label: "Terracotta", sub: "Handcrafted", delta: 299 },
-  { id: "ceramic", label: "Cream ceramic", sub: "Matte finish", delta: 449 },
-] as const;
+
+
 
 function ProductDetail() {
   const { product } = Route.useLoaderData();
-  const [size, setSize] = useState<(typeof SIZES)[number]["id"]>("m");
-  const [pot, setPot] = useState<(typeof POTS)[number]["id"]>("nursery");
+  const navigate = useNavigate();
   const [qty, setQty] = useState(1);
   const [activeIdx, setActiveIdx] = useState(0);
-  const { addItem } = useCart();
+  const { addItem, close: closeCart } = useCart();
   const { toggleItem, hasItem } = useWishlist();
   const liked = hasItem(product.id);
   const [related, setRelated] = useState<Product[]>([]);
@@ -99,22 +93,20 @@ function ProductDetail() {
       .select("*")
       .eq("is_active", true)
       .neq("id", product.id)
-      .limit(4)
+      .limit(6)
       .then(({ data }) => {
         if (data && data.length > 0) {
           setRelated((data as DbProduct[]).map(fromDb));
         } else {
           // Fallback to local products
-          const fallback = localProducts.filter(p => p.id !== product.id).slice(0, 4);
+          const fallback = localProducts.filter(p => p.id !== product.id).slice(0, 6);
           setRelated(fallback);
         }
         setLoadingRelated(false);
       });
   }, [product.id]);
 
-  const sizeObj = SIZES.find((s) => s.id === size)!;
-  const potObj = POTS.find((p) => p.id === pot)!;
-  const unitPrice = product.price + sizeObj.delta + potObj.delta;
+  const unitPrice = product.price;
   const total = unitPrice * qty;
 
   // Gallery consists of the main image and any additional gallery images from the database
@@ -180,7 +172,17 @@ function ProductDetail() {
           </div>
 
           <div className="flex flex-col">
-            <span className="text-xs font-semibold uppercase tracking-wider text-primary-deep">{product.tag}</span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs font-semibold uppercase tracking-wider text-primary-deep">
+                {product.category}
+              </span>
+              {product.tag && (
+                <>
+                  <span className="text-muted-foreground/40 text-xs">•</span>
+                  <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{product.tag}</span>
+                </>
+              )}
+            </div>
             <h1 className="mt-2 text-3xl md:text-4xl font-bold text-foreground">{product.name}</h1>
 
             <div className="mt-3 flex items-center gap-2 text-sm">
@@ -200,84 +202,61 @@ function ProductDetail() {
 
             <p className="mt-5 text-muted-foreground leading-relaxed">{product.description}</p>
 
-            <div className="mt-7">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">Size</h3>
-                <span className="text-xs text-muted-foreground">{sizeObj.sub}</span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                {SIZES.map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => setSize(s.id)}
-                    className={`flex flex-col items-center justify-center rounded-xl border px-2 py-2 transition-smooth ${
-                      size === s.id ? "border-primary bg-primary/10 shadow-soft" : "border-border hover:border-primary/40"
-                    }`}
-                  >
-                    <span className="text-xs font-semibold">{s.label}</span>
-                    <span className="text-[10px] text-muted-foreground">{s.sub}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
 
-            <div className="mt-6">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">Pot</h3>
-                <span className="text-xs text-muted-foreground">{potObj.label}</span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                {POTS.map((p) => (
-                  <button
-                    key={p.id}
-                    onClick={() => setPot(p.id)}
-                    className={`flex flex-col items-center justify-center rounded-xl border px-2 py-2 transition-smooth ${
-                      pot === p.id ? "border-primary bg-primary/10 shadow-soft" : "border-border hover:border-primary/40"
-                    }`}
-                  >
-                    <span className="text-xs font-semibold text-center">{p.label}</span>
-                    <span className="text-[10px] text-muted-foreground">
-                      {p.delta > 0 ? `+${formatINR(p.delta)}` : p.sub}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
 
-            <div className="mt-7 flex flex-col sm:flex-row gap-3">
-              <div className="inline-flex items-center rounded-full border-2 border-border h-12 px-1">
-                <button
-                  onClick={() => setQty((q) => Math.max(1, q - 1))}
-                  aria-label="Decrease quantity"
-                  className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary"
+            <div className="mt-7 flex flex-col gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="inline-flex items-center rounded-full border-2 border-border h-12 px-1 shrink-0">
+                  <button
+                    onClick={() => setQty((q) => Math.max(1, q - 1))}
+                    aria-label="Decrease quantity"
+                    className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <span className="w-10 text-center text-base font-semibold">{qty}</span>
+                  <button
+                    onClick={() => setQty((q) => Math.min(99, q + 1))}
+                    aria-label="Increase quantity"
+                    className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </div>
+
+                <Button
+                  onClick={() =>
+                    addItem({
+                      productId: product.id,
+                      name: product.name,
+                      image: product.image,
+                      unitPrice,
+                      qty,
+                    })
+                  }
+                  variant="outline"
+                  className="flex-1 h-12 rounded-full border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary-deep text-base font-semibold transition-all"
                 >
-                  <Minus className="h-4 w-4" />
-                </button>
-                <span className="w-10 text-center text-base font-semibold">{qty}</span>
-                <button
-                  onClick={() => setQty((q) => Math.min(99, q + 1))}
-                  aria-label="Increase quantity"
-                  className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary"
-                >
-                  <Plus className="h-4 w-4" />
-                </button>
+                  <ShoppingBag className="h-5 w-5 mr-2" />
+                  Add to Cart
+                </Button>
               </div>
 
               <Button
-                onClick={() =>
+                onClick={() => {
                   addItem({
                     productId: product.id,
                     name: product.name,
                     image: product.image,
-                    variant: `${sizeObj.label} · ${potObj.label}`,
                     unitPrice,
                     qty,
-                  })
-                }
-                className="flex-1 h-12 rounded-full bg-gradient-primary text-base font-semibold shadow-glow hover:opacity-95"
+                  });
+                  closeCart();
+                  navigate({ to: "/checkout" });
+                }}
+                className="w-full h-12 rounded-full bg-gradient-primary text-base font-semibold shadow-glow hover:opacity-95 transition-all"
               >
-                <ShoppingBag className="h-5 w-5" />
-                Add to Cart · {formatINR(total)}
+                Buy Now · {formatINR(total)}
               </Button>
             </div>
 
@@ -309,11 +288,22 @@ function ProductDetail() {
         </div>
       </section>
 
+      {product.additional_info && (
+        <section className="container mx-auto px-4 mt-8 md:mt-12">
+          <div className="rounded-3xl border border-border/60 p-6 md:p-8 shadow-sm">
+            <div 
+              className="text-base text-muted-foreground leading-relaxed whitespace-pre-wrap [&>p]:mb-4 last:[&>p]:mb-0 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:mb-4 [&>ol]:list-decimal [&>ol]:pl-5 [&>ol]:mb-4 [&>b]:font-semibold [&>b]:text-foreground [&>strong]:font-semibold [&>strong]:text-foreground"
+              dangerouslySetInnerHTML={{ __html: product.additional_info }}
+            />
+          </div>
+        </section>
+      )}
+
       <section className="container mx-auto px-4 py-12">
         <h2 className="font-display text-2xl md:text-3xl font-semibold text-foreground mb-6">You may also like</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-5">
           {loadingRelated
-            ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="aspect-square rounded-3xl" />)
+            ? Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="aspect-square rounded-3xl" />)
             : related.map((p) => (
                 <Link
                   key={p.id}
@@ -332,6 +322,8 @@ function ProductDetail() {
               ))}
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 }

@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/useAuth";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +20,7 @@ import { formatINR } from "@/lib/format";
 import type { DbProduct } from "@/hooks/useProducts";
 import type { QuickLink } from "@/hooks/useQuickLinks";
 import { DashboardTab } from "@/components/admin/DashboardTab";
+import { NavigationTab } from "@/components/admin/NavigationTab";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — Plantsin" }, { name: "robots", content: "noindex" }] }),
@@ -75,7 +77,7 @@ function AdminPage() {
           <TabsContent value="products" className="mt-6"><ProductsTab /></TabsContent>
           <TabsContent value="orders" className="mt-6"><OrdersTab /></TabsContent>
           <TabsContent value="quick-links" className="mt-6"><QuickLinksTab /></TabsContent>
-          <TabsContent value="menu" className="mt-6"><MenuItemsTab /></TabsContent>
+          <TabsContent value="menu" className="mt-6"><NavigationTab /></TabsContent>
           <TabsContent value="settings" className="mt-6"><SettingsTab /></TabsContent>
         </Tabs>
       </div>
@@ -87,6 +89,8 @@ function AdminPage() {
 
 const emptyProduct = {
   name: "",
+  additional_info: "",
+  slug: "",
   tag: "",
   price: 0,
   old_price: null as number | null,
@@ -272,6 +276,7 @@ function ProductDialog({
     setBusy(true);
     const payload = {
       name: form.name!,
+      slug: form.slug?.trim() || form.name!.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
       tag: form.tag ?? "",
       price: Number(form.price ?? 0),
       old_price: form.old_price ? Number(form.old_price) : null,
@@ -280,6 +285,7 @@ function ProductDialog({
       badge: form.badge || null,
       category: form.category!,
       description: form.description ?? "",
+      additional_info: form.additional_info ?? null,
       care_light: form.care_light ?? "",
       care_water: form.care_water ?? "",
       care_pet_safe: form.care_pet_safe ?? "",
@@ -301,6 +307,7 @@ function ProductDialog({
         <DialogHeader><DialogTitle>{form.id ? "Edit product" : "New product"}</DialogTitle></DialogHeader>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2"><Label>Name</Label><Input value={form.name ?? ""} onChange={(e) => set("name", e.target.value)} /></div>
+          <div className="sm:col-span-2"><Label>Custom URL Slug (optional)</Label><Input value={form.slug ?? ""} onChange={(e) => set("slug", e.target.value as never)} placeholder="e.g. snake-plant" /></div>
           <div><Label>Tag</Label><Input value={form.tag ?? ""} onChange={(e) => set("tag", e.target.value)} placeholder="e.g. Easy care · Indoor" /></div>
           <div><Label>Category</Label>
             <div className="flex gap-2 mt-1">
@@ -393,6 +400,12 @@ function ProductDialog({
           </div>
 
           <div className="sm:col-span-2"><Label>Description (Short)</Label><Textarea rows={3} value={form.description ?? ""} onChange={(e) => set("description", e.target.value)} /></div>
+          
+          <div className="sm:col-span-2">
+            <Label>Additional Information (HTML Supported)</Label>
+            <p className="text-xs text-muted-foreground mb-2 mt-1">You can use basic HTML here (e.g., &lt;b&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;br&gt;).</p>
+            <Textarea rows={6} value={form.additional_info ?? ""} onChange={(e) => set("additional_info", e.target.value)} placeholder="<b>Plant Name:</b> Anthurium..." />
+          </div>
           <div><Label>Light</Label><Input value={form.care_light ?? ""} onChange={(e) => set("care_light", e.target.value)} placeholder="Bright indirect" /></div>
           <div><Label>Water</Label><Input value={form.care_water ?? ""} onChange={(e) => set("care_water", e.target.value)} placeholder="Weekly" /></div>
           <div className="sm:col-span-2"><Label>Pet safe</Label><Input value={form.care_pet_safe ?? ""} onChange={(e) => set("care_pet_safe", e.target.value)} placeholder="Pet safe / Toxic to pets" /></div>

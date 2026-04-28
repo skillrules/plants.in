@@ -64,11 +64,11 @@ export function HeroBento() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:h-[480px]">
         
         {/* MAIN LEFT CARD (Carousel) */}
-        <div className="relative md:col-span-2 rounded-[2rem] overflow-hidden bg-[#1A4C31] text-white flex flex-col min-h-[450px] md:min-h-0 group">
+        <div className="relative md:col-span-2 rounded-[2rem] overflow-hidden bg-[#1A4C31] text-white flex flex-col min-h-[320px] md:min-h-0 group">
           <div className="overflow-hidden h-full absolute inset-0" ref={emblaRef}>
             <div className="flex h-full touch-pan-y">
               {mainSlides.map((slide) => (
-                <div key={slide.id} className="relative flex-[0_0_100%] min-w-0 h-full p-8 sm:p-12 flex flex-col justify-between">
+                <div key={slide.id} className="relative flex-[0_0_100%] min-w-0 h-full p-6 sm:p-12 flex flex-col justify-between">
                   
                   {/* Background Image (Aligned to right/bottom) */}
                   <div className="absolute inset-y-0 right-0 w-2/3 pointer-events-none">
@@ -81,30 +81,30 @@ export function HeroBento() {
                   </div>
 
                   <div className="relative z-20 flex flex-col items-start max-w-md h-full justify-center">
-                    <div className="mb-8">
-                      <span className="inline-block px-4 py-1.5 rounded-full border border-white/30 text-xs font-bold tracking-wider uppercase mb-6 backdrop-blur-sm bg-white/10">
+                    <div className="mb-4 sm:mb-8">
+                      <span className="inline-block px-3 py-1 sm:px-4 sm:py-1.5 rounded-full border border-white/30 text-[10px] sm:text-xs font-bold tracking-wider uppercase mb-3 sm:mb-6 backdrop-blur-sm bg-white/10">
                         {slide.tag}
                       </span>
-                      <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl leading-[1.1] mb-6 drop-shadow-sm whitespace-pre-line">
+                      <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl leading-[1.1] mb-3 sm:mb-6 drop-shadow-sm whitespace-pre-line">
                         {slide.title}
                       </h1>
-                      <p className="text-white/80 text-lg leading-relaxed max-w-sm">
+                      <p className="text-white/80 text-sm sm:text-lg leading-relaxed max-w-sm">
                         {slide.desc}
                       </p>
                     </div>
 
-                    <div className="mt-auto flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    <div className="mt-auto flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                       <Link 
                         to="/shop" 
-                        className="bg-white text-[#1A4C31] hover:bg-white/90 font-medium px-8 py-3.5 rounded-full transition-all flex items-center gap-2 hover:gap-3"
+                        className="bg-white text-[#1A4C31] hover:bg-white/90 font-medium px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-full transition-all flex items-center gap-2 hover:gap-3 text-sm sm:text-base"
                       >
                         Explore the shop <ArrowRight className="w-4 h-4" />
                       </Link>
                       <Link 
                         to="/shop" 
-                        className="text-white/80 hover:text-white transition-colors text-sm flex items-center gap-1 group/link"
+                        className="text-white/80 hover:text-white transition-colors text-xs sm:text-sm flex items-center gap-1 group/link"
                       >
-                        or browse indoor plants <ArrowRight className="w-4 h-4 transition-transform group-hover/link:translate-x-1" />
+                        or browse indoor plants <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 transition-transform group-hover/link:translate-x-1" />
                       </Link>
                     </div>
                   </div>

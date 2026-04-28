@@ -105,6 +105,77 @@ export type Database = {
           },
         ]
       }
+      navigation_categories: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          is_active: boolean
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      navigation_items: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          display_order: number
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+          url_path: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+          url_path: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+          url_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "navigation_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "navigation_categories"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       orders: {
         Row: {
           created_at: string
@@ -173,6 +244,8 @@ export type Database = {
           sort_order: number
           tag: string
           updated_at: string
+          slug: string | null
+          additional_info: string | null
         }
         Insert: {
           badge?: string | null
@@ -193,6 +266,8 @@ export type Database = {
           sort_order?: number
           tag?: string
           updated_at?: string
+          slug?: string | null
+          additional_info?: string | null
         }
         Update: {
           badge?: string | null
@@ -213,6 +288,8 @@ export type Database = {
           sort_order?: number
           tag?: string
           updated_at?: string
+          slug?: string | null
+          additional_info?: string | null
         }
         Relationships: []
       }

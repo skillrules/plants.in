@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/pagination";
 import { SlidersHorizontal, Leaf, X } from "lucide-react";
 import { Header } from "@/components/site/Header";
+import { Footer } from "@/components/site/Footer";
 
 const CATEGORIES: Category[] = ["Indoor", "Succulent", "Flowering", "Trailing"];
 
@@ -516,6 +517,8 @@ function ShopPage() {
           </div>
         </div>
       </div>
+    
+      <Footer />
     </div>
   );
 }

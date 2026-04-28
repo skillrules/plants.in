@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
+import { Footer } from "@/components/site/Footer";
 import { useWishlist } from "@/store/wishlist";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Heart, ArrowLeft } from "lucide-react";
@@ -54,6 +55,8 @@ function WishlistPage() {
           </div>
         )}
       </main>
+    
+      <Footer />
     </div>
   );
 }

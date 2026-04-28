@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
+import { Footer } from "@/components/site/Footer";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -49,6 +50,8 @@ function UserDashboard() {
           </div>
         </div>
       </main>
+    
+      <Footer />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
+import { Footer } from "@/components/site/Footer";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
@@ -74,6 +75,8 @@ function DynamicPage() {
           dangerouslySetInnerHTML={{ __html: page.content || "" }}
         />
       </main>
+    
+      <Footer />
     </div>
   );
 }

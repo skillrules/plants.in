@@ -15,6 +15,8 @@ export type Category = "Indoor" | "Succulent" | "Flowering" | "Trailing";
 
 export interface Product {
   id: string;
+  slug: string;
+  additional_info?: string;
   name: string;
   tag: string;
   price: number;
@@ -32,6 +34,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000001",
     name: "Monstera Deliciosa",
+    slug: "monstera-deliciosa",
     tag: "Easy care · Indoor",
     price: 1299,
     oldPrice: 1799,
@@ -46,6 +49,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000002",
     name: "Golden Pothos",
+    slug: "golden-pothos",
     tag: "Trailing · Pet-safe-ish",
     price: 549,
     rating: 4.8,
@@ -59,6 +63,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000003",
     name: "ZZ Plant",
+    slug: "zz-plant",
     tag: "Low light · Hardy",
     price: 899,
     rating: 4.7,
@@ -71,6 +76,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000004",
     name: "Peace Lily",
+    slug: "peace-lily",
     tag: "Air purifying · Flowering",
     price: 749,
     oldPrice: 999,
@@ -85,6 +91,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000005",
     name: "Pink Echeveria",
+    slug: "pink-echeveria",
     tag: "Succulent · Mini",
     price: 249,
     rating: 4.9,
@@ -97,6 +104,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000006",
     name: "Calathea Orbifolia",
+    slug: "calathea-orbifolia",
     tag: "Statement · Shade lover",
     price: 1149,
     rating: 4.8,
@@ -110,6 +118,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000007",
     name: "Fiddle Leaf Fig",
+    slug: "fiddle-leaf-fig",
     tag: "Statement · Indoor",
     price: 1499,
     oldPrice: 1899,
@@ -124,6 +133,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000008",
     name: "Snake Plant",
+    slug: "snake-plant",
     tag: "Air purifying · Hardy",
     price: 699,
     rating: 4.9,
@@ -136,6 +146,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000009",
     name: "Boston Fern",
+    slug: "boston-fern",
     tag: "Hanging · Lush",
     price: 599,
     oldPrice: 799,
@@ -150,6 +161,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000010",
     name: "Jade Plant",
+    slug: "jade-plant",
     tag: "Succulent · Lucky",
     price: 349,
     rating: 4.8,
@@ -162,6 +174,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000011",
     name: "Pink Anthurium",
+    slug: "pink-anthurium",
     tag: "Flowering · Tropical",
     price: 999,
     rating: 4.6,
@@ -175,6 +188,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000012",
     name: "Rubber Plant",
+    slug: "rubber-plant",
     tag: "Bold foliage · Indoor",
     price: 1099,
     rating: 4.7,
@@ -187,6 +201,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000013",
     name: "Spider Plant",
+    slug: "spider-plant",
     tag: "Easy care · Hanging",
     price: 499,
     rating: 4.8,
@@ -200,6 +215,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000014",
     name: "String of Pearls",
+    slug: "string-of-pearls",
     tag: "Succulent · Trailing",
     price: 649,
     rating: 4.5,
@@ -212,6 +228,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000015",
     name: "Bird of Paradise",
+    slug: "bird-of-paradise",
     tag: "Statement · Tropical",
     price: 1999,
     oldPrice: 2499,
@@ -226,6 +243,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000016",
     name: "Pilea Peperomioides",
+    slug: "pilea-peperomioides",
     tag: "Mini · Coin Plant",
     price: 449,
     rating: 4.7,
@@ -239,6 +257,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000017",
     name: "English Ivy",
+    slug: "english-ivy",
     tag: "Classic · Climbing",
     price: 399,
     rating: 4.6,
@@ -251,6 +270,7 @@ export const products: Product[] = [
   {
     id: "550e8400-e29b-41d4-a716-000000000018",
     name: "Alocasia Polly",
+    slug: "alocasia-polly",
     tag: "Exotic · Statement",
     price: 1299,
     rating: 4.8,

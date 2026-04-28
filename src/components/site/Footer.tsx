@@ -45,14 +45,13 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Support */}
+          {/* Support & Policies */}
           <div>
             <h3 className="font-bold text-foreground mb-6 text-sm uppercase tracking-wider">Support</h3>
             <ul className="space-y-3.5">
-              <li><Link to="/page/$slug" params={{ slug: "faq" }} className="text-muted-foreground hover:text-primary transition-colors text-sm">FAQ</Link></li>
-              <li><Link to="/page/$slug" params={{ slug: "shipping" }} className="text-muted-foreground hover:text-primary transition-colors text-sm">Shipping & Returns</Link></li>
-              <li><Link to="/page/$slug" params={{ slug: "care-guide" }} className="text-muted-foreground hover:text-primary transition-colors text-sm">Plant Care Guide</Link></li>
-              <li><Link to="/page/$slug" params={{ slug: "contact" }} className="text-muted-foreground hover:text-primary transition-colors text-sm">Contact Us</Link></li>
+              <li><Link to="/about" className="text-muted-foreground hover:text-primary transition-colors text-sm">About Us</Link></li>
+              <li><Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors text-sm">Contact Us</Link></li>
+              <li><Link to="/return-refund" className="text-muted-foreground hover:text-primary transition-colors text-sm">Return & Refund Policy</Link></li>
               <li><Link to="/page/$slug" params={{ slug: "track-order" }} className="text-muted-foreground hover:text-primary transition-colors text-sm">Track Order</Link></li>
             </ul>
           </div>
@@ -63,15 +62,15 @@ export function Footer() {
             <ul className="space-y-4 mb-8">
               <li className="flex items-start gap-3 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4 mt-0.5 shrink-0 text-primary-deep" />
-                <span>123 Green Avenue, Flora District, Mumbai, 400001</span>
+                <span>Kolkata, West Bengal, 700137</span>
               </li>
               <li className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4 shrink-0 text-primary-deep" />
-                <span>+91 98765 43210</span>
+                <span>+91 8240665500</span>
               </li>
               <li className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4 shrink-0 text-primary-deep" />
-                <span>hello@plantsin.com</span>
+                <span>contact@plantsin.com</span>
               </li>
             </ul>
             <div className="flex gap-4">
@@ -95,9 +94,13 @@ export function Footer() {
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} Plantsin. All rights reserved.
           </p>
-          <div className="flex gap-6 text-sm">
-            <Link to="/page/$slug" params={{ slug: "privacy" }} className="text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link>
-            <Link to="/page/$slug" params={{ slug: "terms" }} className="text-muted-foreground hover:text-foreground transition-colors">Terms of Service</Link>
+          <div className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2 text-sm">
+            <Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">About Us</Link>
+            <Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact Us</Link>
+            <Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">Terms and Conditions</Link>
+            <Link to="/disclaimer" className="text-muted-foreground hover:text-foreground transition-colors">Disclaimer</Link>
+            <Link to="/return-refund" className="text-muted-foreground hover:text-foreground transition-colors">Return and Refund Policy</Link>
           </div>
         </div>
       </div>

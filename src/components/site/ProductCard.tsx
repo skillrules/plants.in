@@ -30,7 +30,7 @@ export function ProductCard({ product }: { product: Product }) {
     <article className="group relative flex flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-soft transition-smooth hover:shadow-elegant hover:-translate-y-1">
       <Link
         to="/products/$id"
-        params={{ id: product.id }}
+        params={{ id: product.slug || product.id }}
         className="relative aspect-square overflow-hidden bg-secondary/40 block"
       >
         <img
@@ -81,7 +81,7 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
         <Link
           to="/products/$id"
-          params={{ id: product.id }}
+          params={{ id: product.slug || product.id }}
           className="mt-1.5 text-base font-semibold text-foreground line-clamp-1 hover:text-primary-deep transition-smooth"
         >
           {product.name}
@@ -146,7 +146,7 @@ export function ProductCard({ product }: { product: Product }) {
                   <ShoppingBag className="h-5 w-5 mr-2" /> Add to Cart
                 </Button>
                 <Button asChild variant="outline" className="h-12 w-full rounded-full">
-                  <Link to="/products/$id" params={{ id: product.id }}>View Full Details</Link>
+                  <Link to="/products/$id" params={{ id: product.slug || product.id }}>View Full Details</Link>
                 </Button>
               </div>
             </div>
